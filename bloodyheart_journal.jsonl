@@ -1,1 +1,1 @@
-cat /home/workdir/artifacts/BloodyHeart-v1.6.1/bloodyheart_journal.jsonl
+{"timestamp": "2026-06-04T14:00:05.470104+00:00", "source": "BloodyHeart.StateStore[QuickTest]", "destination": "*", "event_type": "state.put", "version": "v1", "payload": {"key": "mode", "version": 1, "value": "test"}, "priority": "P2_AUTONOMOUS"}
