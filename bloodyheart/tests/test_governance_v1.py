@@ -1,0 +1,1 @@
+cat /home/workdir/artifacts/BloodyHeart-v1.6.1/bloodyheart/tests/test_governance_v1.py

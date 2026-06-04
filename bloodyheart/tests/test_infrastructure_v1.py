@@ -1,0 +1,1 @@
+cat /home/workdir/artifacts/BloodyHeart-v1.6.1/bloodyheart/tests/test_infrastructure_v1.py
