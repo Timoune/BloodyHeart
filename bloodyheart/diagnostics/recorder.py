@@ -1,6 +1,6 @@
 """
 bloodyheart.diagnostics.recorder
-───────────────────
+────────────────────────────────
 FlightRecorder (v1.5) — Structured JSONL black-box / flight data recorder for CoreBus.
 
 Subscribes to events (optionally filtered by fnmatch patterns) and appends them
