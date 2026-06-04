@@ -1,15 +1,14 @@
 """
-BloodyHeart v1 — Cognitive Microkernel for Mini Von (COMPLETE)
+BloodyHeart v1.7 — Cognitive Microkernel for Mini Von (Hardened)
 
-This package provides the full microkernel with:
-- Priority-scheduled CoreBus
-- MVCC state + transactions + snapshots
-- Hierarchical safe modes (L1–L4)
-- S1–S4 security escalation
-- Trust, resource, and budget governance
-- Health monitoring + dependency DAG
-- Rich module manifests
+v1.7 changes:
+- BlockingTaskMonitor for detection of non-cooperative / blocking modules
+- Basic CompensationRegistry for external transaction tracking
+- Stronger manifest validation and version reporting
+- Improved preemption and safety documentation
 """
 
 from .kernel import BloodyHeart, BloodyHeartConfig
-from .manifest import ModuleManifest, TrustLevel, ResourceLimits
+from .manifest import ModuleManifest, TrustLevel, ResourceLimits, RecoveryPolicy
+from .core.compensation import CompensationRegistry
+from .compensator import RobustCompensator, CompensationMetrics, DeadLetterQueue  # v1.7+
