@@ -1,6 +1,6 @@
 """
 bloodyheart.core.dryrun
-───────────────────
+───────────────────────
 Dry-run / simulation mode support (v1.6).
 
 Allows high-stakes operations (BigArms tool calls, external APIs, state changes with side effects)
