@@ -1,48 +1,58 @@
-# BloodyHeart v1.6.1 — Cognitive Microkernel for Mini Von
+# BloodyHeart v1.7.1 — BigArms Integration Update
 
-**Complete hardened release** (June 2026)
+This package contains the **BigArms integration module** for **BloodyHeart v1.7.1**.
 
-This is the full, production-ready BloodyHeart v1.6.1 microkernel with all cumulative hardening from the development roadmap:
+## What's New in v1.7.1 Integration
 
-- **v1.2**: TrustLevel as IntEnum (correct ordering), authenticated_emitter + system impersonation protection, MVCC asyncio.Lock, LRU BlobManager, Schema strict mode
-- **v1.3**: Single massive blob handling, MVCC exponential backoff retry on contention
-- **v1.4**: Per-emitter blob quota isolation (DoS prevention), deterministic P0_SECURITY preemption via Task.cancel()
-- **v1.5**: ThreadPoolManager for sync offloading, FlightRecorder (black-box JSONL), strong idempotency requirements for compensation
-- **v1.6**: ViolationType enum (structured classification), DryRunContext for safe simulation, strict schema default in config
-- **v1.6.1**: `handle_budget_exceeded` now consistently routes through `ViolationType.BUDGET_EXHAUSTION`
+- Deep integration with `CompensationRegistry`
+- `BlockingTaskMonitor` awareness via scheduler callback
+- `TaskBudgetWatchdog` integration for tool executions
+- Built-in **circuit breaker** for BigArms connectivity resilience
+- Automatic **Safe Mode escalation** + `SecurityEscalationMatrix` reporting on repeated failures
+- Rich event payloads (`tool.execute.started`, detailed result/failed events)
+- Full governance enforcement + HITL approval flow for ELEVATED capabilities
+- Dry-run awareness from the kernel
+- Operational metrics via `get_metrics()`
 
-## Key Features
-- Priority-scheduled CoreBus with preemption
-- MVCC state store + transactions (external side-effects explicitly not rolled back — use BigArms compensation)
-- Hierarchical safe modes (L1–L4) + S1–S4 security escalation
-- TrustEnforcer + ResourceGovernor + TaskBudgetWatchdog
-- BlobManager with per-emitter quotas + LRU hot cache + disk persistence
-- HealthMonitor + DependencyDAG
-- Dry-run / simulation mode
-- Flight data recorder for observability
+## How to Install
 
-## Usage
+1. Copy `bloodyheart/bigarms_integration.py` into your existing `bloodyheart/` package.
+2. Make sure you have `BigArms` (v0.7+) installed and the Named Pipe server running.
+3. Wire it during BloodyHeart startup (see example below).
+
+## Wiring Example
+
 ```python
 from bloodyheart.kernel import BloodyHeart, BloodyHeartConfig
+from bloodyheart.bigarms_integration import wire_bigarms_to_bloodyheart
 
-kernel = BloodyHeart(BloodyHeartConfig(
-    name="MiniVonKernel",
-    dry_run_default=False,
-    schema_allow_unknown=False   # strict mode recommended
-))
+kernel = BloodyHeart(BloodyHeartConfig(name="MiniVonKernel"))
+
+# Wire BigArms integration (v1.7.1)
+bigarms_executor = wire_bigarms_to_bloodyheart(kernel)
 
 await kernel.start()
-# register modules with rich manifests...
 ```
 
-See `example_usage.py` for a full demo.
+## Key Events
 
-## Ownership
-Proprietary / all rights reserved. Not MIT. Only the owner (Timoune) may profit from this.
+- `tool.execute.request` (from GhostMind)
+- `tool.execute.started`
+- `tool.execute.approval_required` (for ELEVATED)
+- `tool.execute.result`
+- `tool.execute.failed`
 
-## Integration
-Designed to sit between GhostMind (cognition) ↔ BloodyHeart ↔ BigArms (execution sandbox).
+## Metrics
 
----
+```python
+metrics = bigarms_executor.get_metrics()
+print(metrics)
+```
 
-Generated from complete codebase dump — all tests pass, imports clean, v1.6.1 patch applied.
+## Notes
+
+- This integration maintains **loose coupling** via `BigArmsNamedPipeClient`.
+- All governance layers (Trust, SafeMode, Resource, Security, Watchdog) are enforced.
+- Compensation is automatically registered and triggered on failure when applicable.
+
+For questions or further customization, refer to the source or contact the developer.
